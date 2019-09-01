@@ -7,9 +7,10 @@
  * 
  * 三壶倒水问题：
  * 
- * 描述：给定一个装满水的 8 升满壶和两个分别是 5 升、3 升的空壶，请想个优雅的办法，使得其中一个水壶恰好装 4 升水，每一步的操作只能是倒空或倒满，请列举步骤
+ * 描述：
+ * 给定一个装满水的 8 升满壶和两个分别是 5 升、3 升的空壶，请想个优雅的办法，使得其中一个水壶恰好装 4 升水，每一步的操作只能是倒空或倒满，请列举步骤
  * 
- * 图解：
+ * 说明：
  *    8L                                                     8L
  *  ------                                                 ------
  * |  --  |                                               |      |
@@ -111,7 +112,7 @@ function solution (
                         nextHead,
                         nextTail
                     ] = calcAfterSwitch(jugs[head], jugs[tail])
-                    
+
                     const next = new JugsSnapshot(
                         snapshot,
                         jugs.map((jug, index) => {
