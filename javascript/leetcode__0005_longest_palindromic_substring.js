@@ -34,7 +34,7 @@ function solution (string) {
     // 0   1   2   3   4
     // 0 1 2 3 4 5 6 7 8
     for (let i = 0; i < doubleStrLen - 1; i++) {
-        // 第一次：奇数 1 向两侧步进，偶数 2 向两侧步进
+        // 第一次：奇数向两侧步进 1，偶数向两侧步进 2
         const step = i & 1 ? 1 : 2
 
         let left = i - step, right = i + step
@@ -43,9 +43,13 @@ function solution (string) {
         const manacher = i & 1 ? [] : [string[i / 2]]
 
         while (left >= 0 && right <= doubleStrLen - 2) {
-            if (string[left / 2] === string[right / 2]) {
-                manacher.unshift(string[left / 2])
-                manacher.push(string[right / 2])
+            
+            const leftChar = string[left / 2]
+            const rightChar = string[right / 2]
+
+            if (leftChar === rightChar) {
+                manacher.unshift(leftChar)
+                manacher.push(rightChar)
             } else {
                 break
             }
