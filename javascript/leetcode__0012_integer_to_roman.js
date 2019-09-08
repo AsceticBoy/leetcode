@@ -95,4 +95,5 @@ function solution (integer) {
     assert.equal(solution(58), 'LVIII')
     assert.equal(solution(1447), 'MCDXLVII')
     assert.equal(solution(1994), 'MCMXCIV')
+    assert.equal(solution(2994), 'MMCMXCIV')
 })()
