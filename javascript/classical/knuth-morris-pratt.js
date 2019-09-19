@@ -4,7 +4,7 @@
  * @time 2019-09-10
  * @author liudu
  * 
- * KMP字符串匹配算法（Knuth-Morris-Pratt）
+ * KMP字符串匹配算法 (Knuth-Morris-Pratt)
  * 
  * 描述：
  * 给定字符串 s 以及匹配串 m 可以计算: m 是否与 s 相匹配、匹配位置、m 在 s 中全局匹配了几次等
@@ -182,5 +182,7 @@ function KMP (string, partial) {
     return j === partial.length ? i - j : -1
 }
 
-assert.equal(KMP('bababababcap', 'abababca'), 3)
-assert.equal(KMP('btbpblsancap', 'san'), 6)
+(function () {
+    assert.equal(KMP('bababababcap', 'abababca'), 3)
+    assert.equal(KMP('btbpblsancap', 'san'), 6)
+})()
