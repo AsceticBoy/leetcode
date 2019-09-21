@@ -35,8 +35,6 @@
 
 "use strict"
 
-const assert = require('assert').strict;
-
 // 无符号 INT 最大值
 const UNSIGNED_INT_MAX = 0xFFFFFFFF
 
@@ -399,25 +397,7 @@ HashMap.MAXIMUM_CAPACITY = 1 << 30
 // 初始化容量
 HashMap.DEFAULT_INITIAL_CAPACITY = 1 << 4
 // 负载因子
-HashMap.DEFAULT_LOAD_FACTOR = 0.75;
+HashMap.DEFAULT_LOAD_FACTOR = 0.75
 
-
-(function () {
-    const map = new HashMap();
-    [
-        [1, '1'], // number
-        [null, 'null'], // null
-        [true, 'true'], // boolean
-        ['string', 'string'], // string
-        [Symbol.for('symbol'), 'Symbol.for(\'symbol\')'], // symbol
-        [{ object: 'object' }, '{object: \'object\'}'] // object
-    ].forEach(([key, val]) => {
-        map.put(key, val)
-        assert.equal(map.containsKey(key), true)
-        assert.equal(map.containsValue(val), true)
-        assert.equal(map.get(key), val)
-        map.remove(key)
-        assert.equal(map.get(key), null)
-    })
-})()
+module.exports = HashMap
 
