@@ -145,15 +145,15 @@ class LFUCache {
             if (currentFreqNode) {
                 nextFreqNode = this.freqLink.add(freqNode, currentFreqNode)
             } else {
-                nextFreqNode = this.freqLink.add(freqNode, this.freqLink.tail)
+                nextFreqNode = this.freqLink.add(freqNode, null)
             }
         }
         node.freqNode = nextFreqNode
-        // 把当前数据节点加入到链表头部
-        nextFreqNode.dataKeyLink.add(node, null)
         // 在频次节点中移除相应的数据节点
         if (currentFreqNode)
             this.removeInvalid(currentFreqNode, node)
+        // 把当前数据节点加入到链表头部
+        nextFreqNode.dataKeyLink.add(node, null)
     }
 
     removeInvalid (freqNode, dataNode) {
@@ -173,8 +173,32 @@ LFUCache.DEFAULT_MAX_CAPACITY = 1 << 3;
     cache.put('case1', 'case1')
     assert.equal(cache.table.containsKey('case1'), true)
 
+    cache.put('case1', 'case1')
+    assert.equal(cache.table.containsKey('case1'), true)
+
     cache.put('case2', 'case2')
     assert.equal(cache.table.containsKey('case2'), true)
+
+    assert.equal(cache.freqLink.head.freq, 1)
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case2')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case2')
+    assert.equal(cache.freqLink.tail.freq, 2)
+    assert.equal(cache.freqLink.tail.dataKeyLink.head.key, 'case1')
+    assert.equal(cache.freqLink.tail.dataKeyLink.tail.key, 'case1')
+
+    cache.delete('case1')
+    assert.equal(cache.table.containsKey('case1'), false)
+
+    assert.equal(cache.freqLink.head.freq, 1)
+    assert.equal(cache.freqLink.tail.freq, 1)
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case2')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case2')
+
+    cache.get('case2')
+    assert.equal(cache.freqLink.head.freq, 2)
+    assert.equal(cache.freqLink.tail.freq, 2)
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case2')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case2')
 
     cache.put('case3', 'case3')
     assert.equal(cache.table.containsKey('case3'), true)
@@ -183,18 +207,34 @@ LFUCache.DEFAULT_MAX_CAPACITY = 1 << 3;
     assert.equal(cache.table.containsKey('case4'), true)
 
     cache.put('case5', 'case5')
-    assert.equal(cache.table.containsKey('case5'), true)
-
     cache.put('case5', 'case5')
+    cache.get('case5')
     assert.equal(cache.table.containsKey('case5'), true)
 
-    cache.put('case7', 'case7')
-    assert.equal(cache.table.containsKey('case7'), true)
-
-    cache.put('case8', 'case8')
-    assert.equal(cache.table.containsKey('case8'), true)
-
-    assert.equal(cache.freqLink.tail.freq, 1)
     assert.equal(cache.freqLink.head.freq, 1)
-    
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case4')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case3')
+    assert.equal(cache.freqLink.head.next.freq, 2)
+    assert.equal(cache.freqLink.head.next.dataKeyLink.head.key, 'case2')
+    assert.equal(cache.freqLink.head.next.dataKeyLink.tail.key, 'case2')
+    assert.equal(cache.freqLink.tail.freq, 3)
+    assert.equal(cache.freqLink.tail.dataKeyLink.head.key, 'case5')
+    assert.equal(cache.freqLink.tail.dataKeyLink.tail.key, 'case5')
+
+    cache.put('case6', 'case6')
+    assert.equal(cache.table.containsKey('case6'), true)
+    assert.equal(cache.freqLink.head.freq, 1)
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case6')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case4')
+
+    cache.get('case2')
+    assert.equal(cache.table.containsKey('case2'), true)
+    assert.equal(cache.freqLink.head.freq, 1)
+    assert.equal(cache.freqLink.head.dataKeyLink.head.key, 'case6')
+    assert.equal(cache.freqLink.head.dataKeyLink.tail.key, 'case4')
+    assert.equal(cache.freqLink.head.next.freq, 3)
+    assert.equal(cache.freqLink.tail.freq, 3)
+    assert.equal(cache.freqLink.tail.dataKeyLink.head.key, 'case2')
+    assert.equal(cache.freqLink.tail.dataKeyLink.tail.key, 'case5')
+
 }())
