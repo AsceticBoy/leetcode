@@ -101,8 +101,8 @@ class LFUCache {
             if (this.size > this.capacity) {
                 --this.size
                 // 频次最低且时间最早的 O(1)
-                const rmFreq = this.freqLink.head
-                const rmData = this.freqLink.head.dataKeyLink.tail
+                const rmFreq = this.freqLink.head // head -> tail freq+
+                const rmData = this.freqLink.head.dataKeyLink.tail // head -> tail old+
                 this.removeInvalid(rmFreq, rmData)
                 this.table.remove(rmData.key)
             }
@@ -129,7 +129,7 @@ class LFUCache {
 
     upFrequency (node) {
         let currentFreqNode = node.freqNode, nextFreqNode, nextFrequent
-        // 之前已经有频次节点了
+        // 之前已经有低频次节点了
         if (currentFreqNode) {
             nextFreqNode = currentFreqNode.next
             nextFrequent = currentFreqNode.freq + 1
@@ -138,10 +138,11 @@ class LFUCache {
             nextFreqNode = this.freqLink.head
             nextFrequent = 1
         }
-        // 下一个节点频次节点不存在或者下一个频次节点的频次和 nextFrequent 不符
+        // 下一个频次节点不存在或者下一个频次节点的频次和 nextFrequent 不符
         if (nextFreqNode === null || nextFrequent !== nextFreqNode.freq) {
             const freqNode = new LFUFrequentNode(nextFrequent)
-            // 构造关联
+            // 有频次节点: 往 currentFreqNode 后加
+            // 没频次节点: 往 this.freqLink 头部加
             if (currentFreqNode) {
                 nextFreqNode = this.freqLink.add(freqNode, currentFreqNode)
             } else {
@@ -149,10 +150,10 @@ class LFUCache {
             }
         }
         node.freqNode = nextFreqNode
-        // 在频次节点中移除相应的数据节点
+        // 先在原频次节点中移除相应的数据节点
         if (currentFreqNode)
             this.removeInvalid(currentFreqNode, node)
-        // 把当前数据节点加入到链表头部
+        // 再把数据节点加入到当前频次节点头部
         nextFreqNode.dataKeyLink.add(node, null)
     }
 
