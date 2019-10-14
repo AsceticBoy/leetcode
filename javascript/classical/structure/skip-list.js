@@ -119,7 +119,7 @@ class SkipList {
 
     remove (key) {
         let cp, mod = null
-        let i = this.level - 1
+        let i = Math.max(this.level - 1, 0)
         let start = this.list[i].head
         let end = this.list[i].tail
         // 遍历每层
@@ -167,7 +167,7 @@ class SkipList {
                     pos = start
                     break
                 } else if (cp === 0) {
-                    return start.entity.value
+                    return start.entity
                 }
             }
             start = pos ? pos.prev : end
@@ -179,12 +179,100 @@ class SkipList {
         return null
     }
 
+    firstNode () {
+        return this.list[0].head !== null ? this.list[0].head.entity : null
+    }
+
+    lastNode () {
+        return this.list[0].tail !== null ? this.list[0].tail.entity : null
+    }
+
+    // 对应 key node 的前一个
+    before (key) {
+        let cp
+        let i = Math.max(this.level - 1, 0)
+        let start = this.list[i].head
+        let end = this.list[i].tail
+        // 遍历每层
+        for (; i >= 0; i--) {
+            let pos = null
+            for (; start !== null; start = start.next) {
+                cp = this.comparator(start.entity.key, key)
+                if (cp > 0) {
+                    pos = start
+                    break
+                } else if (cp === 0) {
+                    // 如果是直接和 key 匹配的话，直接返回
+                    return start.entity
+                }
+            }
+            start = pos ? pos.prev : end
+            if (i > 0) {
+                start = start ? start.entity.skipLink[i - 1] : this.list[i - 1].head
+                end = pos ? pos.entity.skipLink[i - 1] : this.list[i - 1].tail
+            } else
+                return start ? start.entity : null
+        }
+        return null
+    }
+
+    // 对应 key node 的后一个
+    after (key) {
+        let cp
+        let i = Math.max(this.level - 1, 0)
+        let start = this.list[i].head
+        let end = this.list[i].tail
+        // 遍历每层
+        for (; i >= 0; i--) {
+            let pos = null
+            for (; start !== null; start = start.next) {
+                cp = this.comparator(start.entity.key, key)
+                if (cp > 0) {
+                    pos = start
+                    break
+                } else if (cp === 0) {
+                    // 如果是直接和 key 匹配的话，直接返回
+                    return start.entity
+                }
+            }
+            start = pos ? pos.prev : end
+            if (i > 0) {
+                start = start ? start.entity.skipLink[i - 1] : this.list[i - 1].head
+                end = pos ? pos.entity.skipLink[i - 1] : this.list[i - 1].tail
+            } else
+                return pos ? pos.entity : null
+        }
+        return null
+    }
+
     clear () {
         for (let i = 0; i < this.list.length; i++) {
             this.list[i] = new DoubleLinkedList()
         }
         this.level = 0
         this.count = 0
+    }
+
+    isEmpty () {
+        return this.count <= 0
+    }
+
+    iterator () { return this[Symbol.iterator]() }
+
+    [Symbol.iterator] () {
+        let current = this.list[0].head
+        return {
+            hasNext () {
+                return current !== null
+            },
+            next () {
+                const result = this.hasNext()
+                    ? { value: { key: current.entity.key, value: current.entity.value }, done: false }
+                    : { value: null, done: true }
+                current = this.hasNext() ? current.next : null
+                return result
+            }
+        }
     }
 }
 
@@ -194,5 +282,3 @@ SkipList.MAX_LEVEL = 1 << 5
 SkipList.RISE_PROBABILITY = 0.25
 
 module.exports = SkipList
-
-

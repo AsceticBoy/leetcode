@@ -1,0 +1,11 @@
+{
+  "name": "algorithm-javascript",
+  "version": "1.0.0",
+  "description": "algorithm solutions by javascript implements",
+  "main": "index.js",
+  "author": "ascetic",
+  "license": "MIT",
+  "dependencies": {
+    "murmurhash3": "^0.4.3"
+  }
+}
