@@ -4,7 +4,7 @@
  * @time 2019-09-21
  * @author liudu
  * 
- * 双向链表 (DoubleLinkedList)
+ * 单 / 双向链表 (LinkedList / DoubleLinkedList)
  * 
  * 结构:
  * 
@@ -21,9 +21,66 @@
 "use strict"
 
 class LinkNode {
-    constructor () {
+    constructor (val) {
         this.prev = null
         this.next = null
+        this.data = val
+    }
+}
+
+class LinkedList {
+    constructor () {
+        this.head = null
+        this.tail = null
+    }
+
+    isEmpty () {
+        return this.head === null && this.tail === null
+    }
+
+    toArray () {
+        let current = this.head
+        const array = [];
+        while (current) {
+            array.push(current.data);
+            current = current.next;
+        }
+        return array
+    }
+
+    /**
+     * 头插、尾插、中间插
+     * @param {*} insert 需要增加的节点
+     * @param {*} before 节点前一个节点
+     */
+     add (insert, before) {
+        // 是否是头部插入
+        if (before) {
+            if (before.next) {
+                // 中间插
+                insert.next = before.next
+                before.next = insert
+            } else {
+                if (this.tail) {
+                    this.tail.next = insert
+                } else {
+                    this.head = insert
+                }
+                this.tail = insert
+                this.tail.next = null
+            }
+        } else {
+            // 头插
+            if (this.head) {
+                this.head = insert
+                insert.next = this.head
+            } else {
+                this.tail = insert
+                this.tail.next = null
+            }
+            this.head = insert
+        }
+        return this
     }
 }
 
@@ -31,12 +88,6 @@ class DoubleLinkedList {
     constructor () {
         this.head = null
         this.tail = null
-    }
-
-    verify (node) {
-        if (node instanceof LinkNode)
-            return true
-        return node === null
     }
 
     isEmpty () {
@@ -49,8 +100,6 @@ class DoubleLinkedList {
      * @param {*} before 节点前一个节点
      */
     add (insert, before) {
-        if (![insert, before].every(this.verify))
-            throw Error('Please Use Effective LinkNode')
         // 是否是头部插入
         if (before) {
             if (before.next) {
@@ -86,8 +135,6 @@ class DoubleLinkedList {
     }
 
     remove (node) {
-        if (!this.verify(node))
-            throw Error('Please Use Effective LinkNode')
         // 中间节点
         if (node.prev && node.next) {
             node.prev.next = node.next
@@ -111,13 +158,11 @@ class DoubleLinkedList {
         node.prev = node.next = null
         return node
     }
-
-    // TODO
-    get () {}
 }
 
 module.exports = {
     LinkNode,
+    LinkedList,
     DoubleLinkedList
 }
 
