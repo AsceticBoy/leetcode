@@ -40,7 +40,7 @@ function solution (linkedList1, linkedList2) {
 }
 
 
-(function validParentheses () {
+(function mergeTwoSorted () {
     const linkedList1 = new LinkedList();
     const linkedList2 = new LinkedList();
     const linkedList3 = new LinkedList();
