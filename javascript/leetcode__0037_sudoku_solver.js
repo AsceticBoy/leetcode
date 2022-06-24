@@ -36,19 +36,29 @@
  
  function solution (board) {
      const n = board.length;
-     // 记录每行可填数字，key为行号，value为可填数组
-     const rowMap = new Map(Array(n).fill().map((_, idx) => [idx, [1, 2, 3, 4, 5, 6, 7, 8, 9]]));
-     // 记录每行可填数字，key为行号，value为可填数组
-     const colMap = new Map(Array(n).fill().map((_, idx) => [idx, [1, 2, 3, 4, 5, 6, 7, 8, 9]]));
-     // 记录每3*3可填数字，key为对角坐标元组，value为可填数组
-     const rectMap = new Map(Array(n).fill().map((_, idx) => [idx, [1, 2, 3, 4, 5, 6, 7, 8, 9]]));
+     // 记录每行可填数字，索引横向递增
+     const rowMap = Array(n).fill().map(() => [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+     // 记录每行可填数字，索引竖向递增
+     const colMap = Array(n).fill().map(() => [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+     // 记录每3*3可填数字，索引先横后竖递增
+     const rectMap = Array(n).fill().map(() => [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-     for (let i = 0; i < board.length; i++) {
-         for (let j = 0; j < board[i].length; j++) {
-
-         }
-        board[i].filter()
+     for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            const point = board[i][j];
+            if (point !== '.') {
+                const num = Number(point);
+                // 横竖坐标与索引的关系
+                const m = (~~(i / 3) * 3) + ~~(j / 3);
+                rowMap[i] = rowMap[i].filter(v => v !== num);
+                colMap[j] = colMap[j].filter(v => v !== num);
+                rectMap[m] = rectMap[m].filter(v => v !== num);
+            }
+        }
      }
+     console.log(rowMap);
+     console.log(colMap);
+     console.log(rectMap);
  }
  
  
